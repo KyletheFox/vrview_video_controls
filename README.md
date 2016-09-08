@@ -1,2 +1,5 @@
-# vrview_video_controls
-My branch of the vrview project developed by Google
+VR View
+=======
+
+Please read the documentation available at
+<https://developers.google.com/vr/concepts/vrview>.
