@@ -61,6 +61,8 @@ function init() {
     showError('WebGL not supported.');
     return;
   }
+
+  console.log("HERE");
   // Load the scene.
   loader.loadScene();
 
@@ -118,6 +120,7 @@ function onSceneLoad(scene) {
     }
   } else if (scene.image) {
     // Otherwise, just render the photosphere.
+	  console.log("Hey I printed when the image is loaded");
     loadImage(scene.image, params);
   }
 
