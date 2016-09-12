@@ -28,15 +28,25 @@ function PhotosphereRenderer() {
 PhotosphereRenderer.prototype = new Emitter();
 
 PhotosphereRenderer.prototype.init = function() {
+  
   var container = document.querySelector('body');
+  //console.log(container);
+
+  //var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
   var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
   var cameraDummy = new THREE.Object3D();
   cameraDummy.add(camera);
+
+  //console.log(camera);
+  //console.log(cameraDummy);
 
   // Antialiasing temporarily disabled to improve performance.
   var renderer = new THREE.WebGLRenderer({antialias: false});
   renderer.setClearColor(0x000000, 0);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  //renderer.setSize(400, 400);
+  //console.log(window.innerWidth);
+  //console.log(renderer);
 
   // Round down fractional DPR values for better performance.
   renderer.setPixelRatio(Math.max(1, Math.floor(window.devicePixelRatio)));
@@ -45,6 +55,8 @@ PhotosphereRenderer.prototype.init = function() {
   var controls = new THREE.VRControls(camera);
   var effect = new THREE.VREffect(renderer);
   effect.setSize(window.innerWidth, window.innerHeight);
+  //effect.setSize(400, 400);
+  //console.log(effect);
 
   this.camera = camera;
   this.renderer = renderer;
@@ -107,6 +119,8 @@ PhotosphereRenderer.prototype.set360Video = function(videoElement, opt_params) {
 
   this.isStereo = !!params.isStereo;
 
+  console.log(videoElement);
+
   // Load the video texture.
   var videoTexture = new THREE.VideoTexture(videoElement);
   videoTexture.minFilter = THREE.LinearFilter;
@@ -114,6 +128,7 @@ PhotosphereRenderer.prototype.set360Video = function(videoElement, opt_params) {
   videoTexture.format = THREE.RGBFormat;
   videoTexture.generateMipmaps = false;
   videoTexture.needsUpdate = true;
+  console.log(videoTexture);
 
   this.onTextureLoaded_(videoTexture);
 };

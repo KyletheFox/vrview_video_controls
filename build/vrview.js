@@ -43107,6 +43107,12 @@ LoadingIndicator.prototype.show = function() {
 module.exports = LoadingIndicator;
 
 },{}],12:[function(_dereq_,module,exports){
+// Changes 
+// --- line 120-130 - Added button for testing ---
+
+// TODO: Figure out where the damn height and width changes
+// TODO: Figure out how to stop/restart video three.js lines 7330-7355
+
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43171,7 +43177,6 @@ function init() {
     return;
   }
 
-  console.log("HERE");
   // Load the scene.
   loader.loadScene();
 
@@ -43220,16 +43225,37 @@ function onSceneLoad(scene) {
       }
     } else {
       // Load the video element.
+
       videoElement = document.createElement('video');
       videoElement.src = scene.video;
       videoElement.loop = true;
+      videoElement.controls = true;
       videoElement.setAttribute('crossorigin', 'anonymous');
       videoElement.addEventListener('canplaythrough', onVideoLoad);
       videoElement.addEventListener('error', onVideoError);
+      console.log(videoElement);
+      
+      //  -------  My changes -----------------
+      document.body.overflow = "visible";
+
+      pauseBtn = document.createElement('button');
+      pauseBtn.style.position = "fixed";
+      pauseBtn.style.height = "50px";
+      pauseBtn.style.width = "100%";
+      pauseBtn.style.bottom = "0px";
+      pauseBtn.onclick = pauseVideo;
+      document.body.appendChild(pauseBtn);
+      // ----------------------------------
+
+      // console.log(document.getElementsByTagName('canvas')[0]);
+      // var canvas = document.getElementsByTagName('canvas')[0];
+      // canvas.id = "videoPlayer";
+      // console.log(canvas);
+      // canvas[0].height = canvas[0].height-50;
+
     }
   } else if (scene.image) {
     // Otherwise, just render the photosphere.
-	  console.log("Hey I printed when the image is loaded");
     loadImage(scene.image, params);
   }
 
@@ -43242,6 +43268,7 @@ function onVideoLoad() {
     isStereo: loadedScene.isStereo,
   }
   renderer.set360Video(videoElement, params);
+  console.log(renderer);
 
   // On mobile, tell the user they need to tap to start. Otherwise, autoplay.
   if (!Util.isMobile()) {
@@ -43249,6 +43276,15 @@ function onVideoLoad() {
     loadIndicator.hide();
     // Autoplay the video on desktop.
     videoElement.play();
+    // console.log(videoElement);
+    // videoElement.controls = true;
+    // videoElement.removeAllActions();
+    
+    var canvasItem = document.getElementsByTagName('canvas')[0];
+    // canvas.id = "videoPlayer";
+    // console.log(document.getElementById("videoPlayer"));
+    //console.log(canvasItem.toDataURL());
+    //console.log($("canvas"));
   } else {
     // Tell user to tap to start.
     showError('Tap to start video', 'Play');
@@ -43257,6 +43293,11 @@ function onVideoLoad() {
 
   // Prevent onVideoLoad from firing multiple times.
   videoElement.removeEventListener('canplaythrough', onVideoLoad);
+}
+
+function pauseVideo() {
+  console.log("HERE");
+  videoElement.pause();
 }
 
 function onVideoTap() {
@@ -43351,15 +43392,25 @@ function PhotosphereRenderer() {
 PhotosphereRenderer.prototype = new Emitter();
 
 PhotosphereRenderer.prototype.init = function() {
+  
   var container = document.querySelector('body');
+  //console.log(container);
+
+  //var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
   var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 100);
   var cameraDummy = new THREE.Object3D();
   cameraDummy.add(camera);
+
+  //console.log(camera);
+  //console.log(cameraDummy);
 
   // Antialiasing temporarily disabled to improve performance.
   var renderer = new THREE.WebGLRenderer({antialias: false});
   renderer.setClearColor(0x000000, 0);
   renderer.setSize(window.innerWidth, window.innerHeight);
+  //renderer.setSize(400, 400);
+  //console.log(window.innerWidth);
+  //console.log(renderer);
 
   // Round down fractional DPR values for better performance.
   renderer.setPixelRatio(Math.max(1, Math.floor(window.devicePixelRatio)));
@@ -43368,6 +43419,8 @@ PhotosphereRenderer.prototype.init = function() {
   var controls = new THREE.VRControls(camera);
   var effect = new THREE.VREffect(renderer);
   effect.setSize(window.innerWidth, window.innerHeight);
+  //effect.setSize(400, 400);
+  //console.log(effect);
 
   this.camera = camera;
   this.renderer = renderer;
@@ -43430,6 +43483,8 @@ PhotosphereRenderer.prototype.set360Video = function(videoElement, opt_params) {
 
   this.isStereo = !!params.isStereo;
 
+  console.log(videoElement);
+
   // Load the video texture.
   var videoTexture = new THREE.VideoTexture(videoElement);
   videoTexture.minFilter = THREE.LinearFilter;
@@ -43437,6 +43492,7 @@ PhotosphereRenderer.prototype.set360Video = function(videoElement, opt_params) {
   videoTexture.format = THREE.RGBFormat;
   videoTexture.generateMipmaps = false;
   videoTexture.needsUpdate = true;
+  console.log(videoTexture);
 
   this.onTextureLoaded_(videoTexture);
 };
