@@ -135,7 +135,7 @@ function onSceneLoad(scene) {
       pauseBtn.style.width = "100%";
       pauseBtn.style.bottom = "0px";
       pauseBtn.onclick = pauseVideo;
-      document.body.appendChild(pauseBtn);
+      //document.body.appendChild(pauseBtn);
       // ----------------------------------
 
       // console.log(document.getElementsByTagName('canvas')[0]);
@@ -187,8 +187,15 @@ function onVideoLoad() {
 }
 
 function pauseVideo() {
-  console.log("HERE");
+  console.log("paused");
   videoElement.pause();
+  pauseBtn.onclick = resumeVideo;
+}
+
+function resumeVideo() {
+  console.log("resumed");
+  videoElement.play();
+  pauseBtn.onclick = pauseVideo;
 }
 
 function onVideoTap() {
